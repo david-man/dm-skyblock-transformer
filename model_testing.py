@@ -1,11 +1,11 @@
 import torch
 from MASTER_model import MASTER
-from constants import PREDICTION_HORIZON, COLUMNS_OF_INTEREST, ENCODINGS
+from constants import PREDICTION_HORIZON, ENCODINGS, FEATURES_OF_INTEREST, GATES
 import numpy as np
 if __name__ == '__main__':
     model = MASTER(timesteps=PREDICTION_HORIZON,
-                   features = 1,#sell
-                   gate_inputs = 1,#sellVolume
+                   features = len(FEATURES_OF_INTEREST),#sell
+                   gate_inputs = len(GATES),#sellVolume
                    encodings = ENCODINGS)
     model.load_state_dict(torch.load('model.pt', weights_only=True))
     data = np.load('data/training_dataset.npy')

@@ -4,7 +4,8 @@ DATA_TAGS = ['BOOSTER_COOKIE', 'ENCHANTED_DIAMOND_BLOCK', 'RECOMBOBULATOR_3000',
             'FLAWLESS_JADE_GEM', 'JACOBS_TICKET', 
             'SUMMONING_EYE', 'MAGMA_FISH_SILVER']
 DATE_FORMAT = "%Y-%m-%d"
-COLUMNS_OF_INTEREST = ['sell', 'sellVolume']#what features are you taking in
+FEATURES_OF_INTEREST = ['sell']#what features are you taking in
+GATES = ['sellVolume']#what features are you using for gates
 LABEL_COLUMN = 'sell'#what are you trying to predict for
 
 PREDICTION_HORIZON = 4#how many days in advance of prediction

@@ -1,6 +1,6 @@
 import pandas as pd
 from datetime import datetime, timedelta
-from constants import DATA_TAGS, DATE_FORMAT, COLUMNS_OF_INTEREST, PREDICTION_HORIZON, LABEL_COLUMN
+from constants import DATA_TAGS, DATE_FORMAT, GATES, FEATURES_OF_INTEREST, PREDICTION_HORIZON, LABEL_COLUMN
 import numpy as np
 flattened_data_df = pd.read_pickle("data/raw_datafile")
 #create official timestamp index
@@ -44,8 +44,7 @@ for streak in streaks:
             time_data = []
             for data in DATA_TAGS:
                 tag_specific_data = []
-                for column in COLUMNS_OF_INTEREST:
-                    
+                for column in FEATURES_OF_INTEREST + GATES:#ordering matters
                     string = f"{data}_{column}"
                     #normalization parameter at the beginning of the streak
                     norm_param = flattened_data_df.loc[streak[0]][string]

@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 import numpy as np
-from constants import DATA_TAGS, COLUMNS_OF_INTEREST
+from constants import DATA_TAGS, GATES, FEATURES_OF_INTEREST
 #data of interest
 
 date_format = "%Y-%m-%d"
@@ -44,7 +44,7 @@ for data in DATA_TAGS:
 flattened_data_dict = {}
 #flatten to convert to Pandas Dataframe
 for data in DATA_TAGS:
-    for column in COLUMNS_OF_INTEREST + ['timestamp']:
+    for column in GATES + FEATURES_OF_INTEREST + ['timestamp']:
         flattened_data_dict[f'{data}_{column}'] = data_dict[data][column].values
 
 flattened_data_df = pd.DataFrame(flattened_data_dict)
