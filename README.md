@@ -1,5 +1,5 @@
 # dm-skyblock-transformer
-A transformer with an IC of ~0.1 trained on Hypixel Skyblock's bazaar data. Inspiration for the structure of the model was taken from https://arxiv.org/abs/2312.15235. 
+A transformer with an IC of ~0.1 trained on Hypixel Skyblock's bazaar data. Inspiration for the structure of the model was taken from https://arxiv.org/abs/2312.15235. Data was taken from Skyblock Coflnet's API, which means I did _not_ leak any API keys :).
 
 This model was made purely for fun and to help me learn about modern day attention networks. Please do not take this model too seriously.
 
