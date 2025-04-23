@@ -8,7 +8,8 @@ if __name__ == '__main__':
     training_data = np.load('data/training_dataset.npy')
     training_labels = np.load('data/training_labels.npy')
     model = MASTER(timesteps=PREDICTION_HORIZON,
-                   features = len(COLUMNS_OF_INTEREST),
+                   features = 1,#sell
+                   gate_inputs = 1,#sellVolume
                    encodings = ENCODINGS)
     
     x_train, x_test, y_train, y_test = train_test_split(training_data, training_labels, train_size = 0.8)

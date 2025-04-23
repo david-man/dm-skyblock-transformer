@@ -10,7 +10,7 @@ class Gate(nn.Module):
         super(Gate, self).__init__()
         self.model = nn.Sequential(
             nn.Linear(j, s),
-            nn.Softmax()
+            nn.Softmax(dim = -1)
         )
     def forward(self, x):
         return self.model(x)
@@ -186,12 +186,15 @@ class Predictor(nn.Module):
 class MASTER(nn.Module):
     def __init__(self, 
                  timesteps : int, #what is your t
-                 features : int, #initial features to embed into encodings. may literally be 1, but thats okay
+                 features : int, #initial features to embed into encodings. may literally be 1, but thats okay. these should be the first things in the input
+                 gate_inputs : int, #gate input size
                  encodings : int, #encodings to use
                  heads : int = 1,
     ):
         super(MASTER, self).__init__()
-        #no gate for now
+        self.features = features
+        self.gate_inputs = gate_inputs
+        self.gate = Gate(gate_inputs, features)
         self.embedder = Embedder(features, encodings)
         self.position_encoder = PositionalEncoding(timesteps, encodings)
         self.layer_norm = LayerNormalization(encodings)
@@ -201,8 +204,18 @@ class MASTER(nn.Module):
         self.predictor = Predictor(encodings)
     
     def forward(self, x):
-        #x is of shape B x |S| x t x f
-        embedded_input = self.embedder(x)#B x |S| x t x e
+        #x is of shape B x |S| x t x (f + g)
+        x_f = x[..., :self.features]
+        if(self.gate_inputs != 0):
+            if(self.features == 1):#torch is annoying with the auto-dimensionality reduction
+                x_f.unsqueeze(-1)
+            x_g = x[..., -1, self.features:]
+            if(self.gate_inputs == 1):
+                x_g.unsqueeze(-1)
+            
+            gated_output = self.gate(x_g).unsqueeze(dim = -2)
+            x_f = gated_output * x_f
+        embedded_input = self.embedder(x_f)#B x |S| x t x e
         positionally_embedded_input = self.position_encoder(embedded_input)#B x |S| x t x e
         residual_input = embedded_input + positionally_embedded_input
         layer_normed_input = self.layer_norm(residual_input)#B x |S| x t x e
@@ -211,11 +224,9 @@ class MASTER(nn.Module):
         temporally_attended_input = self.temporal_attention(interstock_input)#B x |S| x t x e
         outputs = self.predictor(temporally_attended_input)#B x |S| x t x e
         return outputs
-    
-        
-if __name__ == '__main__':
-    master = MASTER(5, 1, 4)
-    input_tensor = torch.rand(6, 2, 5, 1)
-    print(master(input_tensor).shape)
 
+if __name__ == '__main__':
+    model = MASTER(1, 2, 1, 4)
+    k = torch.rand((1,6,5,3))
+    print(model(k))
     
